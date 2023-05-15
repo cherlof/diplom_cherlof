@@ -1,0 +1,104 @@
+#:import Factory kivy.factory.Factory
+
+WindowManager:
+	MenuWindow:
+	CameraWindow:
+	InstructionWindow:
+	ValidationWindow:
+
+<MenuWindow>:
+    name: "menu"
+    BoxLayout:
+        orientation: "vertical"
+        size: root.width, root.height
+
+        Label:
+            text: "Распознавание продукта по фотографии"
+
+        Button:
+            text: "Сделать фото"
+            on_release:
+                app.root.current = "camera"
+                root.manager.transition.direction = "left"
+
+        Button:
+            text: "Инструкция"
+            on_release:
+                app.root.current = "instruction"
+                root.manager.transition.direction = "left"
+
+
+<CameraWindow>
+    name: "camera"
+    BoxLayout:
+        orientation: 'vertical'
+        Camera:
+            id: camera
+            resolution: (640, 480)
+            play: False
+        ToggleButton:
+            text: 'Play'
+            on_press: camera.play = not camera.play
+            size_hint_y: None
+            height: '48dp'
+        Button:
+            text: 'Сделать снимок'
+            size_hint_y: None
+            height: '48dp'
+            on_press:
+                root.capture()
+                app.root.current = "validation"
+                root.manager.transition.direction = "left"
+        Button:
+            size_hint_y: None
+            height: '48dp'
+            text: 'Главное меню'
+            on_release:
+                app.root.current = "menu"
+                root.manager.transition.direction = "right"
+
+<ValidationWindow>
+    name: "validation"
+    BoxLayout:
+        orientation: "vertical"
+        Image:
+            source: 'photo.png'
+            size: self.texture_size
+        Button:
+            size_hint_y: None
+            height: '48dp'
+            text: 'Распознать'
+            on_release:
+                root.recognize()
+        Button:
+            size_hint_y: None
+            height: '48dp'
+            text: 'Сделать новый снимок'
+            on_release:
+                app.root.current = "camera"
+                root.manager.transition.direction = "right"
+
+
+
+<InstructionWindow>:
+    name: "instruction"
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: 'Инструкция'
+            font_size: 20
+        Label:
+            text: '1.Нажмите сделать фото'
+            font_size: 20
+        Label:
+            text: '2.Сделайте фото продукта нажав \"Сделать снимок\"'
+            font_size: 20
+        Label:
+            text: '3.Нажмите распознать или сделайте другой снимок'
+            font_size: 20
+        Button:
+            font_size: 24
+            text: 'Главное меню'
+            on_release:
+                app.root.current = "menu"
+                root.manager.transition.direction = "right"
